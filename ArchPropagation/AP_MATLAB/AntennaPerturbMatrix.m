@@ -13,7 +13,9 @@ S=zeros(size(A,2));
 
 % Where there is an edge in A with component c perturbation may only be 0 or -1
 [~,vu2]=find((A(c,:)+S(c,:))==1);
+
 Dis=(rand(length(vu2),1)>=pu); %pairs to disconnect
+
 for i=1:length(Dis),
     if(Dis(i)==0) % Fails probability test
         S(c,vu2(i))=0; % Make no perturbation
@@ -24,7 +26,9 @@ end
 
 % Where there is no edge in A with component c perturbation may only be 0 or 1
 [~,vw2]=find((A(c,:)-S(c,:))==0);
+
 Con=(rand(length(vw2),1)>=pw);%pairs to connect
+
 for i=1:length(Con),
     if(Con(i)==0) % Fails probability test
         S(c,vw2(i))=0; % Make no perturbation

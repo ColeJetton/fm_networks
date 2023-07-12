@@ -2,12 +2,13 @@
 """
 
 @author: colej
-arch_prop_functions.py developed from previous MATLAB 
+arch_prop_functions.py developed from previous MATLAB  code
 
 Functions called in other Archictecture Propagation Files
 
 -:func:`connectivity`:  Used to generate a connectivity matrix for a 
-                        network of brain components.
+                        network of brain components. (incomplete, only adapted)
+                        for use in our research
 -:func:`modular`:       Generates a modular network of size n.
 -:func:`HMPerturbMatrix`:Takes HM matrix and produces a matrix starting from
                         modular matrix w/ intra-module connection probability p 
@@ -22,6 +23,56 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from numpy import linalg as LA
+
+def AntennaPerturbMatrix(A,c,pw,pu):
+    """ 
+    This function takes in A and c (component being changed), and produces a matrix S starting from
+    a random matrix with probability p and then rewired such that
+    S(A==0)=1 with probability pw (probability of wiring)
+    S(A==1)=-1 with probability pd (probability of unwiring)
+    A is assumed square
+     
+    Keep track of versions here: 
+    Date: Version 1: 10 November 2015
+    Author: Andy Dong
+    Adapted to Python by Cole Jetton, 2023
+    """   
+    
+   
+    n= A.shape[0] #get shape of A for calculations
+    
+    S = pd.DataFrame(np.zeros((n,n)))
+    Sc = S.to_numpy()
+    #Where there is an edge in A with component c perturbation may only be 0 or -1
+    vu = np.where(A[c-1,:]+Sc[c-1,:]==1)
+    Dis = np.random.rand(1,len(vu[0])) #initialize pairs to connect
+
+    for i in range(0,Dis.shape[1]):
+
+        if Dis[0,i]>=pu: #do a probability test to create perturbation or not
+            S.iloc[c-1,vu[0][i]]=-1 #make perturbation
+        else:
+            S.iloc[c-1,vu[0][i]]=0 #don't make perturbation
+    
+    #Where there is no edge in A with component c perturbation may only be 0 or 1
+    Sc = S.to_numpy()      
+    vw = np.where(A[c-1,:]-Sc[c-1,:]==0)
+
+    Con = np.random.rand(1,len(vw[0]))
+    for i in range(0,Con.shape[1]):
+
+        if Con[0,i]>=pw:  #do a probability test to create perturbation or not
+            S.iloc[c-1,vw[0][i]]=1 #make perturbation
+        else:
+            S.iloc[c-1,vw[0][i]]=0 #don't make perturbation
+    
+    #format based on symmetry and set diagonal to zero
+    S = np.triu(S.to_numpy())
+    S = S+S.T
+    S[(np.arange(0,n),np.arange(0,n))]=0
+    
+    return  S
+
 
 def ComputeSine(A,E,k):
     """
@@ -80,9 +131,8 @@ def ComputeSineReverse(A,E,k):
     
     return S
 
-
 def connectivity(n,f_type,params):
-    #NOTE! may change since not all 
+    #NOTE! this is only set up for 1a
     """
 
  This function is used to generate a connectivity matrix
@@ -171,6 +221,37 @@ param are parameters dependent on type
     
     return cij
 
+def HMNetwork(n,m,r,p,q):
+    """
+    This function takes produces a matrix A which is a hierarchically modular
+    network of n nodes, m modules per level, and r levels where p is
+    the edge probability within a module and q is the connectivity off the
+    hierarchy
+     
+    Keep track of versions here: 
+    Date: Version 1: 9 October 2015
+    Author: Andy Dong
+    Adapted to Python by Cole Jetton, 2023
+    """
+    # Initial lowest level hierarchy module
+    # Number of nodes in lowest level hierarchy
+    Lnodes = int(n/(2*2**(r-1)))
+    A=modular(Lnodes,m,p,int(Lnodes/m),q,1)
+    A=A.to_numpy()
+    
+    for i in range(0,r):
+        P = RandNetwork(int(Lnodes*2**i),p*q**(i+1))#altered from original based on python vs MATLAB indexing schemes
+        #update A with a terrible way to do it
+        A = np.vstack((np.hstack((A,P)),np.hstack((P,A))))
+    
+
+    A = np.triu(A)
+    A = A+A.T
+    n = A.shape[0]
+    A[(np.arange(0,n),np.arange(0,n))]=0
+    return A
+
+
 def HMPerturbMatrix(A,n,m,p,q,pw,pu):
     """ 
     % This function takes in HM matrix A and produces a matrix S starting from
@@ -187,29 +268,26 @@ def HMPerturbMatrix(A,n,m,p,q,pw,pu):
     % Keep track of versions here: 
     % Date: Version 1: 24 November 2015
     """   
-    
-   
-
     S = modular(n,m,p,int(n/m),q,0.5)
     
     #where there is an edge in A pertubation may only be 0 or -1
     vu = np.where(A+S.to_numpy()==2)
     Dis = np.random.rand(1,len(vu[0])) #initialize pairs to connect
-    for i in range(0,len(Dis)):
+    for i in range(0,Dis.shape[1]):
 
         if Dis[0,i]>=pu: #do a probability test to create perturbation or not
-            S.iloc[vu[0][i],vu[1][i]]=0 #make no perturbation
-        else:
             S.iloc[vu[0][i],vu[1][i]]=-1 #make perturbation
+        else:
+            S.iloc[vu[0][i],vu[1][i]]=0 #make no perturbation
     
     #where there is no edge in A perturbation may only be 0 or 1        
     vw = np.where(A-S.to_numpy()==-1)
     Con = np.random.rand(1,len(vw[0]))
-    for i in range(0,len(Dis)):
+    for i in range(0,Con.shape[1]):
         if Con[0,i]>=pw:  #do a probability test to create perturbation or not
-            S.iloc[vw[0][i],vw[1][i]]=0 #make no perturbation
-        else:
             S.iloc[vw[0][i],vw[1][i]]=-1 #make perturbation
+        else:
+            S.iloc[vw[0][i],vw[1][i]]=0 #make no perturbation
     
     #format based on symmetry and set diagonal to zero
     S = np.triu(S.to_numpy())
@@ -217,7 +295,6 @@ def HMPerturbMatrix(A,n,m,p,q,pw,pu):
     S[(np.arange(0,n),np.arange(0,n))]=0
     
     return  S
-
 
 def idealModular(n,m):
     """
@@ -227,10 +304,11 @@ def idealModular(n,m):
     % m: number of modules
     % size of module: n/m needs to be an integer
     """ 
-    
+    g = np.ones((int(n/m),int(n/m)))  #generate full connected blocks
+    G = np.kron(np.eye(m,dtype=int),g)#form into modules
+    G[(np.arange(0,n),np.arange(0,n))]=0#ensure no connection on diags
     
     return G
-
 
 def modular(n,nm,pm,km,pc,pe):
     """
@@ -327,7 +405,6 @@ def modular(n,nm,pm,km,pc,pe):
     
     return cij
 
-
 def ModularPerturbMatrix(A,m,p,q,pw,pu):
     """ 
     % This function takes in A and produces a matrix S starting from
@@ -354,21 +431,21 @@ def ModularPerturbMatrix(A,m,p,q,pw,pu):
     #where there is an edge in A pertubation may only be 0 or -1
     vu = np.where(A+S.to_numpy()==2)
     Dis = np.random.rand(1,len(vu[0])) #initialize pairs to connect
-    for i in range(0,len(Dis)):
+    for i in range(0,Dis.shape[1]):
 
         if Dis[0,i]>=pu: #do a probability test to create perturbation or not
-            S.iloc[vu[0][i],vu[1][i]]=0 #make no perturbation
-        else:
             S.iloc[vu[0][i],vu[1][i]]=-1 #make perturbation
+        else:
+            S.iloc[vu[0][i],vu[1][i]]=0 #make no perturbation
     
     #where there is no edge in A perturbation may only be 0 or 1        
     vw = np.where(A-S.to_numpy()==-1)
     Con = np.random.rand(1,len(vw[0]))
-    for i in range(0,len(Dis)):
+    for i in range(0,Con.shape[1]):
         if Con[0,i]>=pw:  #do a probability test to create perturbation or not
-            S.iloc[vw[0][i],vw[1][i]]=0 #make no perturbation
-        else:
             S.iloc[vw[0][i],vw[1][i]]=-1 #make perturbation
+        else:
+            S.iloc[vw[0][i],vw[1][i]]=0 #make no perturbation
     
     #format based on symmetry and set diagonal to zero
     S = np.triu(S.to_numpy())
@@ -402,21 +479,21 @@ def PerturbMatrix(A,p,pw,pu):
     #where there is an edge in A pertubation may only be 0 or -1
     vu = np.where(A+S.to_numpy()==2)
     Dis = np.random.rand(1,len(vu[0])) #initialize pairs to connect
-    for i in range(0,len(Dis)):
+    for i in range(0,Dis.shape[1]):
 
         if Dis[0,i]>=pu: #do a probability test to create perturbation or not
-            S.iloc[vu[0][i],vu[1][i]]=0 #make no perturbation
-        else:
             S.iloc[vu[0][i],vu[1][i]]=-1 #make perturbation
+        else:
+            S.iloc[vu[0][i],vu[1][i]]=0 #make no perturbation
     
     #where there is no edge in A perturbation may only be 0 or 1        
     vw = np.where(A-S.to_numpy()==-1)
     Con = np.random.rand(1,len(vw[0]))
-    for i in range(0,len(Dis)):
+    for i in range(0,Con.shape[1]):
         if Con[0,i]>=pw:  #do a probability test to create perturbation or not
-            S.iloc[vw[0][i],vw[1][i]]=0 #make no perturbation
-        else:
             S.iloc[vw[0][i],vw[1][i]]=-1 #make perturbation
+        else:
+            S.iloc[vw[0][i],vw[1][i]]=0 #make no perturbation
     
     #format based on symmetry and set diagonal to zero
     S = np.triu(S.to_numpy())

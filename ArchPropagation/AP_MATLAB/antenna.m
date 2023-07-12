@@ -2,7 +2,7 @@ clear;
 % Number of eigenvectors to retain
 k=16;
 % Number of computation loops
-g=100;
+g=1000;
 % Memory initialization
 a=cell(1,g);
 x=cell(1,g);
@@ -27,6 +27,10 @@ Er2=AntennaPerturbMatrix(b,3,.5,.5);
 Er3=AntennaPerturbMatrix(b,3,.9,.1);
 Er4=AntennaPerturbMatrix(b,3,.1,.9);
 for i=1:g,
+            Er1=AntennaPerturbMatrix(b,3,.1,.1);
+        Er2=AntennaPerturbMatrix(b,3,.5,.5);
+        Er3=AntennaPerturbMatrix(b,3,.9,.1);
+        Er4=AntennaPerturbMatrix(b,3,.1,.9);
         a{i}=ComputeSine(b,Er1,k);
         x{i}=ComputeSine(b,Er2,k);
         y{i}=ComputeSine(b,Er3,k);
@@ -66,7 +70,7 @@ xlabel('Eigenvector index');
 ylabel('Angle of rotation');
 title('Perturbed pw=.9 pu=.1');% Plot the results
 subplot(2,2,4);
-scatter(1:size(zgrandmean,2),ygrandmean,'Marker','o','MarkerEdgeColor','red');
+scatter(1:size(zgrandmean,2),zgrandmean,'Marker','o','MarkerEdgeColor','red');
 xlabel('Eigenvector index');
 ylabel('Angle of rotation');
 title('Perturbed pw=.1 pu=.9');

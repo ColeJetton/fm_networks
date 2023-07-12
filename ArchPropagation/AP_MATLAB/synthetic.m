@@ -6,7 +6,7 @@ nodes=1024;
 % Erdos-Renyi connection probability
 % p=[.9 .8 .7 .6 .5 .4 .3 .2 .1];
 % Modular Perturbation Probability
-p = [0.05 0.025 0.01 0.005 0.025 0.001];
+p = [0.05 0.025 0.01 0.005 0.005 0.001];%p = [0.05 0.025 0.01 0.005 0.025 0.001];
 % Number of eigenvectors to retain
 k=100;
 % Number of computation loops

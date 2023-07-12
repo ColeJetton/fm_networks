@@ -30,6 +30,7 @@ S=modular(n,m,p,n/m,q,.5);
 % Where there is an edge in A perturbation may only be 0 or -1
 [vu1,vu2]=find(A+S==2);
 Dis=(rand(length(vu1),1)>=pu); %pairs to disconnect
+
 for i=1:length(Dis),
     if(Dis(i)==0) % Fails probability test
         S(vu1(i),vu2(i))=0; % Make no perturbation

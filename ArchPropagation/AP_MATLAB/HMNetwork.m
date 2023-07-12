@@ -11,12 +11,13 @@ function [A] = HMNetwork(n,m,r,p,q)
 
 % Initial lowest level hierarchy module
 % Number of nodes in lowest level hierarchy
-lnodes=n/(2*power(2,r-1));
+lnodes=n/(2*power(2,r-1))
 % Lowest level hierarchy module
-A=modular(lnodes,m,p,lnodes/m,q,1);
+A=modular(lnodes,m,p,lnodes/m,q,1)
 for i=1:r,
-    P=RandNetwork(power(2,i-1)*lnodes,p*power(q,i));
-    Aprime=[A,P;P,A];
+    p*power(q,i)
+    P=RandNetwork(power(2,i-1)*lnodes,p*power(q,i))
+    Aprime=[A,P;P,A]
     A=Aprime;
 end
 
