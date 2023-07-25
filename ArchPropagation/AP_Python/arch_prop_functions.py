@@ -101,6 +101,7 @@ def ComputeSine(A,E,k):
     
     return S
 
+
 def ComputeSineReverse(A,E,k):
     """
     % This function takes in A and E, and produces a vector S which is the
