@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import time
 import csv
 from numpy import linalg as LA
-
+from infinite_regress_functions import *
 
 
 # %%
@@ -30,13 +30,3 @@ G = nx.read_edgelist("cj610_edgelist.txt", nodetype=int)
 
 CJ610_DSM = nx.to_numpy_array(G)
 
-#later, read in csv to 
-
-# %%
-
-n= CJ610_DSM.shape[0]
-
-e_vals, e_vecs = LA.eig(CJ610_DSM.T)
-
-# %%
-e_vecs = np.real(e_vecs)

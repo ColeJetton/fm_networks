@@ -87,43 +87,20 @@ mapping = {
 }
 G = nx.relabel_nodes(G, mapping)
 
-PW_DSM = nx.to_numpy_array(G)  # node names are eliminated in this form
+PW_DSM_old = nx.to_numpy_array(G)  # node names are eliminated in this form
 
 
 # %% 
 from numpy import genfromtxt
 from numpy import linalg as LA
+
+from infinite_regress_functions import *
 PW_DSM = genfromtxt('PW_DSM.csv',delimiter=',')
 PW_DSM[0][0]=0 #issue with first index as nan
 
 # %% 
-"""
-def Infinite_Regress(A):
-    n= A.shape[0]
-    
-    return
-"""
 
-n = PW_DSM.shape[0]
-PW_DSM_ones = np.copy(PW_DSM); PW_DSM_ones[PW_DSM_ones== 2] =1
-e1 = sum(PW_DSM_ones.T)
-e2 = sum(PW_DSM_ones)
-e = np.ones((1,54))
-#_vals, e_vecs = LA.eig(CJ610_DSM.T)
-
-#find eigenvector and take the first one (corresponds to largest eigenvalue)
-v1, p1 = LA.eig(PW_DSM.T);p = p1[:,0]#p = np.real(p[:,0]) 
-
-v2, q1 = LA.eig(PW_DSM);q= q1[:,0]#q = np.real(q[:,0].T)
-
-#x = (n*p)/(p.T*e), y = (n*q)/(q.T*e)
-
-#x = np.divide(n*p,np.multiply(p.T,e1));x=np.real(x)
-#y = np.divide(n*q,np.multiply(q.T,e2));y=np.real(y)
-
-x = np.divide(n*p,np.sum(p*e));x=np.real(x)
-y = np.divide(n*q,np.sum(q*e));y=np.real(y)
-
+x,y = Infinite_Regress(PW_DSM)
 # %%
 
 names = list(mapping.values())
