@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 17 19:32:58 2023
-
 @author: colej
 
 Pratt and Whitney DSM analysis

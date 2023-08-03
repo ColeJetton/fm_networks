@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jul 25 16:31:00 2023
-
 @author: colej
 
 Improvement/Generalization of Infinite Regress Analysis
