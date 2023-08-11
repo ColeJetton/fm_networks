@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Simple code for creating symmetric version of non-symmetric DSM for
+analysis in our code
 @author: colej
-
-Pratt and Whitney DSM analysis
-Imports PW engine DSM
-Performs Infinite Regress Analysis
-Performs arch propigation
-
-Graphs results at this point, maybe we can save stuff
 """
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,9 +12,20 @@ import pandas as pd
 from arch_prop_functions import *
 import matplotlib.pyplot as plt
 import time
+from numpy import genfromtxt
+from numpy import linalg as LA
 
-# %%  OLD (for reference) import and turn into dsm:
-G = nx.read_edgelist("pw_edgelist.txt", nodetype=int)
+from infinite_regress_functions import *
+PW_DSM = genfromtxt('PW_DSM.csv',delimiter=',')
+PW_DSM[0][0]=0 #issue with first index as nan
+
+PW_DSM_s  = PW_DSM +PW_DSM.T
+
+PW_DSM_s[np.where(PW_DSM_s>1)]=1
+
+
+x,y = Infinite_Regress(PW_DSM_s)
+# %%
 
 mapping = {
     1: "FAN1",
@@ -83,24 +90,6 @@ mapping = {
     53: "EC9",
     54: "EC10",
 }
-G = nx.relabel_nodes(G, mapping)
-
-PW_DSM_old = nx.to_numpy_array(G)  # node names are eliminated in this form
-
-
-# %% 
-from numpy import genfromtxt
-from numpy import linalg as LA
-
-from infinite_regress_functions import *
-PW_DSM = genfromtxt('PW_DSM.csv',delimiter=',')
-PW_DSM[0][0]=0 #issue with first index as nan
-
-# %% 
-
-x,y = Infinite_Regress(PW_DSM)
-# %%
-
 names = list(mapping.values())
 
 plt.figure(0)
@@ -112,17 +101,5 @@ plt.xscale("log")
 for i in range(0,54):
     plt.annotate(names[i],(x[i],y[i]))
     
-    
-# %% Plotting it based on rank 
-o_x = x.argsort()
-r_x = o_x.argsort()
-
-o_y = y.argsort()
-r_y = o_y.argsort()
-
-plt.figure(1)
-plt.scatter(r_x, r_y)
-
-
-for i in range(0,54):
-    plt.annotate(names[i],(r_x[i],r_y[i]))
+# %% 
+sus_score = np.count_nonzero(x<1)/PW_DSM_s.shape[1]

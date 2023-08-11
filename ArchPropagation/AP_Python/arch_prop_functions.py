@@ -21,7 +21,6 @@ Functions called in other Archictecture Propagation Files
 """
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from numpy import linalg as LA
 
 def AntennaPerturbMatrix(A,c,pw,pu):
@@ -239,7 +238,7 @@ def HMNetwork(n,m,r,p,q):
     Lnodes = int(n/(2*2**(r-1)))
     A=modular(Lnodes,m,p,int(Lnodes/m),q,1)
     A=A.to_numpy()
-    
+    print(A)
     for i in range(0,r):
         P = RandNetwork(int(Lnodes*2**i),p*q**(i+1))#altered from original based on python vs MATLAB indexing schemes
         #update A with a terrible way to do it
@@ -509,7 +508,7 @@ def RandNetwork(n,p):
     A = np.triu(A)
     A = A+A.T
     A[(np.arange(0,n),np.arange(0,n))]=0
-    return A
+    return A.astype(int)
 
 def RotationPairs(A):
     """

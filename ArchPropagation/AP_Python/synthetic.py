@@ -23,11 +23,12 @@ np.random.seed(1337)
 # Number of components in the system
 nodes = 1024
 # modular perturbation probability
-p = np.array([0.05, 0.025, 0.01, 0.005, 0.025, 0.001])
+# p = np.array([0.05, 0.025, 0.01, 0.005, 0.025, 0.001])
+p = np.array([0.05, 0.025])#, 0.01, 0.005, 0.025, 0.001])
 # Number of eigenvectors to retain
 k = 100
 # Number of computation loops
-g = 10
+g = 100
 
 
 # %%
@@ -62,9 +63,9 @@ b[
 for i in range(0, len(p)):
     print("Working on Perturbation Probability", p[i])
     for j in range(0, g):
-        Er1 = HMPerturbMatrix(b, nodes, modules, 0, p[i], 0.2, 0.8)
-        Er2 = HMPerturbMatrix(b, nodes, modules, 0, p[i], 0.3, 0.7)
-        Er3 = HMPerturbMatrix(b, nodes, modules, 0, p[i], 0.4, 0.6)
+        Er1 = HMPerturbMatrix(b, nodes, modules, 0, p[i], 0.5, 0.5)
+        Er2 = HMPerturbMatrix(b, nodes, modules, 0, p[i], 0.9, 0.1)
+        Er3 = HMPerturbMatrix(b, nodes, modules, 0, p[i], 0.1, 0.9)
         a.iloc[i, j] = ComputeSine(b, Er1, k)
         x.iloc[i, j] = ComputeSine(b, Er2, k)
         y.iloc[i, j] = ComputeSine(b, Er3, k)
@@ -77,6 +78,7 @@ a = a.to_numpy()
 x = x.to_numpy()
 y = y.to_numpy()
 
+# I don't think there's any point to this code because it's not used elsewhere but is in the original
 for i in range(0, len(p)):
     am.iloc[i, :] = np.mean(a[i, :])
     xm.iloc[i, :] = np.mean(x[i, :])

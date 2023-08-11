@@ -61,9 +61,13 @@ for i=1:length(p),
         %         Er3=ModularPerturbMatrix(b,modules,0,p(i),.1,.9);
         %         Pt{i}=Er1;
         % Hierarchically Modular Perturbation Matrix
-        Er1=HMPerturbMatrix(b,nodes,modules,0,p(i),.2,.8);
-        Er2=HMPerturbMatrix(b,nodes,modules,0,p(i),.3,.7);
-        Er3=HMPerturbMatrix(b,nodes,modules,0,p(i),.4,.6);
+        %Er1=HMPerturbMatrix(b,nodes,modules,0,p(i),.2,.8);
+        %Er2=HMPerturbMatrix(b,nodes,modules,0,p(i),.3,.7);
+        %Er3=HMPerturbMatrix(b,nodes,modules,0,p(i),.4,.6);
+
+        Er1=HMPerturbMatrix(b,nodes,modules,0,p(i),.5,.5);
+        Er2=HMPerturbMatrix(b,nodes,modules,0,p(i),.9,.1);
+        Er3=HMPerturbMatrix(b,nodes,modules,0,p(i),.1,.9);
         a{i,j}=ComputeSine(b,Er1,k);
         x{i,j}=ComputeSine(b,Er2,k);
         y{i,j}=ComputeSine(b,Er3,k);
@@ -84,6 +88,7 @@ for i=1:length(p),
     %      Er(logical(eye(size(Er))))=0;
     %      Er = sparse(Er);
     %      Pt{i}=Er;
+    disp(i)
 end
 % Plot the results
 h1=figure('Name','Eigenvector Rotation');
@@ -138,6 +143,8 @@ title('Perturbed pw=.1 pu=.9');
 
 
 toc
+
+
 % Print Results
 str=sprintf('%u & %.1f & %.1f & %.1f & %u & %.1f & %.1f & %.1f & %u & %.1f & %.1f & %.1f & %.1f',nace, ...
     mace, mabe, mabe-mace, nxce, mxce, mxbe, mxbe-mxce, nyce, myce, mybe, mybe-myce, max([mabe-mace,mxbe-mxce,mybe-myce])-min([mabe-mace,mxbe-mxce,mybe-myce]));
