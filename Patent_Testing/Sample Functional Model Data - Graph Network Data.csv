@@ -1,0 +1,38 @@
+Patent 8294,,,,
+Node Data,,Edge Data,,
+Node #,Node Label,Edge Start Point,Edge End Point,Edge Label
+1,Import HE,1,4,HE
+2,Import HE,2,5,HE
+3,Import HE,3,6,HE
+4,Convert HE to CS,4,16,Thread 1 Loop Size CS
+5,Convert HE to CS,5,20,Stitch Length CS
+6,Convert HE to CS,6,15,ME
+7,Import HE,7,8,HE
+8,Convert HE to ME,8,10,ME
+9,Import HE,9,22,HE
+10,Distribute HE,10,13,ME
+11,Import Cloth,10,17,ME
+12,Import T1,11,15,CL
+13,Distribute ME,12,16,T1
+14,Change ME,13,14,ME
+15,Secure Cloth,13,18,ME
+16,Regulate T1,14,20,ME
+17,Change ME,15,21,CL
+18,Change ME,16,23,T1
+19,Import Thread 2,17,24,ME
+20,Regulate ME,18,25,ME
+21,Regulate Cloth,19,26,T2
+22,Convert HE to CS,20,27,ME
+23,Stabilize Thread 1,21,28,CL
+24,Transfer ME,22,21,Cloth Direction CS
+25,Transfer ME,23,29,T1
+26,Guide Thread 2,24,29,ME
+27,Transfer ME,25,26,ME
+28,Guide Cloth,26,30,T2
+29,Guide Thread 1,26,30,ME
+30,Couple Solids,27,28,ME
+31,Export Solid,28,30,CL
+,,28,30,ME
+,,29,30,T1
+,,29,30,ME
+,,30,31,Stitched Cloth

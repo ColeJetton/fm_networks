@@ -21,7 +21,7 @@ beginning = time.time()
 np.random.seed(1337)
 
 # Number of components in the system
-nodes = 1024
+nodes = 256
 # modular perturbation probability
 # p = np.array([0.05, 0.025, 0.01, 0.005, 0.025, 0.001])
 p = np.array([0.05, 0.025])#, 0.01, 0.005, 0.025, 0.001])
@@ -123,7 +123,7 @@ nxbe = k - nxce
 # Mean angle community eigenspace
 mxce = np.mean(xgrandmean[0:nxce])
 # Mean angle bulk eigenspace
-mxbe = np.mean(agrandmean[nxce + 1 : k])
+mxbe = np.mean(xgrandmean[nxce + 1 : k])
 
 # Number of eigenvalues in community eigenspace
 nyce = RotationPairs(ygrandmean)
@@ -132,7 +132,7 @@ nybe = k - nyce
 # Mean angle community eigenspace
 myce = np.mean(ygrandmean[0:nyce])
 # Mean angle bulk eigenspace
-mybe = np.mean(agrandmean[nyce + 1 : k])
+mybe = np.mean(ygrandmean[nyce + 1 : k])
 
 
 #'%u & %.1f & %.1f & %.1f & %u & %.1f & %.1f & %.1f & %u & %.1f & %.1f & %.1f & %.1f',nace, ...

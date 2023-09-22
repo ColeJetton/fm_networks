@@ -44,16 +44,19 @@ for line in data.splitlines():
     #creates a dictionary of node mapping
     # NOTE: future version should include repeat node testing but
     # idk if that's necessary
-    if ('vertex' in line) and ('parent="1"' in line):
+    if 'vertex' in line:# and ('parent="1"' in line):
         id_index = line.index('id=')
         val_index = line.index('value=')
         style_index = line.index('style=')
         
         nodes.update({line[id_index+4:val_index-2] : line[val_index+7:style_index-2]})
 
-    #essentially 
-      
-    if ('edge' in line) and not ('edgeLabel' in line) and ('target' in line) and ('source' in line):
+    #essentially need to record each edge pair then use that with the key later
+    #to connect and then relabel them
+    
+    # Original (not sure why I included "and not edgelabel" makes no sense)
+    # if ('edge' in line) and not ('edgeLabel' in line) and ('target' in line) and ('source' in line):
+    if ('edge' in line) and ('target' in line) and ('source' in line):
         source_index = line.index('source=') 
         initial_index = line[source_index:].index('"')
         
@@ -77,7 +80,7 @@ G = nx.Graph()
 for i in range(0,len(edges)):
     G.add_edge(*edges[i])
 
-
+nodes_OG = nodes.copy()
 #change labeling scheme to prevent repeat name issues
 i = 1 
 for key in nodes.keys():

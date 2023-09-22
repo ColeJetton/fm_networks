@@ -26,13 +26,13 @@ modules=8;
 % b=modular(nodes,modules,1,nodes/modules,0,1);
 
 % Modular
-% b=modular(nodes,modules,.9,nodes/modules,.6,1);
+ b=modular(nodes,modules,.5,nodes/modules,.3,1);
 
 
 % Hierarchically Modular
 % Number of levels of hierarchy (should be >= 2)
 % levels = 4;
-b=modular(nodes,modules,.9,nodes/modules,.5,.5);
+%b=modular(nodes,modules,.9,nodes/modules,.5,.5);
 
 % Antenna case study
 % load('antennacpm');
@@ -45,7 +45,8 @@ b=triu(b);
 b=b+b';
 
 b(logical(eye(size(b))))=0;
-
+figure(4)
+imshow(b)
 %%
 for i=1:length(p),
     % Compute perturbation

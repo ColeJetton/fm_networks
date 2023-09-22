@@ -456,26 +456,22 @@ def ModularPerturbMatrix(A,m,p,q,pw,pu):
 
 def PerturbMatrix(A,p,pw,pu):
     """ 
-    % This function takes in HM matrix A and produces a matrix S starting from
-    % a modular matrix with intra-module connection probability p and inter-module
-    % connection probability q then rewired such that
+    % This function takes in A and p, and produces a matrix S starting from
+    % a random matrix with probability p and then rewired such that
     % S(A==0)=1 with probability pw (probability of wiring)
     % S(A==1)=-1 with probability pd (probability of unwiring)
-    % A is assumed square and the parameters n,m,r should be correct for A
-    
-    % This is used to perturb a HM network within or outside a module.
-    % To perturb intra-module set q = 0
-    % To perturb inter-module set p = 0
+    % A is assumed square
     % 
     % Keep track of versions here: 
-    % Date: Version 1: 24 November 2015
+    % Date: Version 1: 9 October 2015
+    % Author: Andy Dong
     """   
     
    
     n= A.shape[0] #get shape of A for calculations
     
     S = RandNetwork(n,p)
-    
+    S = pd.DataFrame(S)
     #where there is an edge in A pertubation may only be 0 or -1
     vu = np.where(A+S.to_numpy()==2)
     Dis = np.random.rand(1,len(vu[0])) #initialize pairs to connect
@@ -491,7 +487,7 @@ def PerturbMatrix(A,p,pw,pu):
     Con = np.random.rand(1,len(vw[0]))
     for i in range(0,Con.shape[1]):
         if Con[0,i]>=pw:  #do a probability test to create perturbation or not
-            S.iloc[vw[0][i],vw[1][i]]=-1 #make perturbation
+            S.iloc[vw[0][i],vw[1][i]]=1 #make perturbation
         else:
             S.iloc[vw[0][i],vw[1][i]]=0 #make no perturbation
     

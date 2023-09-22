@@ -15,6 +15,7 @@ import time
 from numpy import genfromtxt
 from numpy import linalg as LA
 
+
 from infinite_regress_functions import *
 PW_DSM = genfromtxt('PW_DSM.csv',delimiter=',')
 PW_DSM[0][0]=0 #issue with first index as nan

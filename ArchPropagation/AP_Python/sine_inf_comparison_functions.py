@@ -45,8 +45,10 @@ def ComputeSine_and_InfReg(A,E,k):
         IR_u[i] = np.count_nonzero(x_u>1)/n
         IR_p[i] = np.count_nonzero(x_p>1)/n
 
-    return S, IR_u, IR_p
+    return S, IR_u #, IR_p
 #sus_score = np.count_nonzero(x<1)/PW_DSM_s.shape[1]
+
+
 
 def AssymetricRandNetwork(n,p):
     
@@ -108,7 +110,56 @@ def Compare(A,p_A,k):
     
     return xabs, yabs, xpd, ypd, S[0], np.mean(S), resoutx, resouty
 
+def Compare_Symmetric(A,p_A,k):
+    
+    n = A.shape[0]
+    e = np.ones((1,n))
+    
+    w1, v1 = np.linalg.eig(A)
 
+
+    w3, v3 = np.linalg.eig(p_A)
+
+
+    #take first eigen for comparison (note, may look at whole thing in a bit)
+
+    q1 = v1[:,0]
+
+
+    q2 = v3[:,0]
+
+    
+    S = np.ones(k) #initialize
+
+    for i in range(0, k):
+        # sine calculations
+        c_i = np.dot(v1[:, i], v3[:,i]/(np.linalg.norm(v1[:, i])*np.linalg.norm(v3[:, i])))
+        s_i = np.sqrt(1-c_i**2)
+        S[i] = np.arcsin(s_i)*180/np.pi
+            
+            
+
+    y1 = np.real(np.divide(k*q1,np.sum(q1*e)))
+
+
+    y2 = np.real(np.divide(k*q2,np.sum(q2*e)))
+
+    xabs = np.mean(np.abs(x1-x2))
+    yabs = np.mean(np.abs(y1-y2))
+    #        IR_u[i] = np.count_nonzero(x_u>1)/n    
+
+    xpd = (np.count_nonzero(x2>1)/n) - (np.count_nonzero(x1>1)/n)
+    ypd = (np.count_nonzero(y2>1)/n) - (np.count_nonzero(y1>1)/n)
+    
+
+    resx = kendalltau(x1,x2)
+    resoutx = resx.statistic
+
+    resy = kendalltau(y1,y2)
+    resouty = resy.statistic
+
+    
+    return np.mean(S), resouty
 """
 o_x = x.argsort()
 r_x = o_x.argsort()

@@ -10,7 +10,6 @@ function [S] = PerturbMatrix(A,p,pw,pu)
 % Date: Version 1: 9 October 2015
 % Author: Andy Dong
 S=RandNetwork(size(A,2),p);
-
 % Where there is an edge in A perturbation may only be 0 or -1
 [vu1,vu2]=find(A+S==2);
 Dis=(rand(length(vu1),1)>=pu); %pairs to disconnect
